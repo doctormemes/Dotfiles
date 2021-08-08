@@ -3,5 +3,4 @@ ignored/
 .zsh_history
 .zcompdump*
 *.zwc
-.p10k.zsh
 
