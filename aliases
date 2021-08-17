@@ -16,6 +16,7 @@ alias sl='ln -srv'
 alias sl-ffs='sudo ln -srv'
 alias rma='rm -drf'
 alias rma-ffs-'sudo rm -drf'
+alias j='jump'
 # clean zcomp and zwc zsh files
 alias cleanzsh='rm -f ${ZDOTDIR:-$HOME}/.zcompdump* ${ZDOTDIR:-$HOME}/.zshrc.zwc'
 
@@ -33,6 +34,13 @@ fi
 
 if (( $+commands[fuck] )); then
 	alias fk='fuck'
+fi
+
+if (( $+commands[python] )); then
+	alias py-m='python -m'
+	alias manage-py='python -m manage.py'
+	alias py-pip='python -m pip'
+	alias py-pip-i='python -m pip install'
 fi
 
 # apt/apt-get

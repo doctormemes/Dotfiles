@@ -3,24 +3,39 @@
 # P10K instant prompt. Keep close to top of .zshrc. Code that may require console input
 # password prompts, etc. must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-~/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-	source "${XDG_CACHE_HOME:-~/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+   source "${XDG_CACHE_HOME:-~/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# if there's a $ZDOTDIR directory, oh-my-zsh is probably in it
-if [[ -n $ZDOTDIR ]]; then
-	export ZSH=$ZDOTDIR/.oh-my-zsh
-else # oh-my-zsh is probably in home directory
-	export ZDOTDIR=~
-	export ZSH=~/.oh-my-zsh
+# this is so ZDOTDIR can be used for any ZSH
+# file path validation (even if ZDOTDIR is not set)
+ZDOTDIR=${ZDOTDIR:-$HOME}
+
+# use best command line text editor available
+if
+(( $+commands[nvim] )); then EDITOR_NO_DM='nvim'; elif (( $+commands[vim] )); then EDITOR_NO_DM='vim';
 fi
 
-# Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-   export EDITOR='vim'
-else
-   export EDITOR='gedit'
+# use best graphical text editor available
+if
+(( $+commands[subl] )); then EDITOR_DM='subl'
+elif (( $+commands[gedit] )); then EDITOR_DM='gedit'
+else EDITOR_DM='mousepad'
 fi
 
+export ZSH=$ZDOTDIR/.oh-my-zsh
+
+# Preferred editor for session (depends on if the session has a display manager running)
+# Feel free to change these if you'd like, I just set them using variables so they would have
+# multiple text editors covered, to make sure EDITOR gets set based on the linux environment in use
+if
+[[ -n $DESKTOP_SESSION ]]; then EDITOR=$EDITOR_DM;
+elif [[ -n $SSH_CONNECTION ]] || [[ -z $SESSION_MANAGER ]]; then EDITOR=$EDITOR_NO_DM;
+else printf "Error With Editor variable being set..?\n" && EDITOR='nano';
+fi
+
+# Set the variable below to anything you'd like to override the
+# default EDITOR assignment behavior. Example: export EDITOR='kate'
+export EDITOR
 # Hyphen-insensitive completion
 HYPHEN_INSENSITIVE="true"
 # Case-insensitive completion
@@ -73,12 +88,12 @@ source $ZSH/oh-my-zsh.sh
 
 # Deduplicates path & fpath
 [[ -f $ZDOTDIR/.zshenv ]] && {
-	dedup_pathvar PATH
-	dedup_pathvar FPATH
+   dedup_pathvar PATH
+   dedup_pathvar FPATH
 }
 
 # Terminal startup output (won't run unless $STARTUP_CONTENT is true)
 [[ -o interactive && -f $ZDOTDIR/functions ]] && {
-    [[ "$STARTUP_CONTENT" = "true" ]] && sinfo || neofetch
+   [[ "$STARTUP_CONTENT" = "true" ]] && sinfo || neofetch
 }
 
