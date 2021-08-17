@@ -319,7 +319,11 @@ while true; do
     esac
 done
 
-[[ "$INSTALL_DIRECTORY" != "$HOME" && -z "$ZDOTDIR" ]] && export ZDOTDIR="$INSTALL_DIRECTORY"
+if [[ "$INSTALL_DIRECTORY" != "$HOME" && -z "$ZDOTDIR" ]]; then
+export ZDOTDIR="$INSTALL_DIRECTORY"
+elif [[ "$INSTALL_DIRECTORY" == "$HOME" && -z "$ZDOTDIR" ]]; then
+export ZDOTDIR=${ZDOTDIR:-$HOME}
+fi
 
 while true; do
     printf "\tWould you like to use my personal docstheme powerlevel10k shell prompt file, personalized for Parrot OS?\n\n"
@@ -334,7 +338,7 @@ while true; do
             printf "\nOkay, will use docstheme.zsh file.\n" 
             break ;;
         [Nn]* )
-            sed -i 's/\(^P10K_PROMPT=\).*/\1"p10k"/' "$INSTALL_DIRECTORY/.zshrc"
+            sed -i 's/\(^P10K_PROMPT=\).*/\1"p10k"/' "$ZDOTDIR/.zshrc"
             printf "\nOkay, will use p10k.zsh file.\nRemember to run p10k configure to configure it to your liking.\n"
             break ;;
         * )
