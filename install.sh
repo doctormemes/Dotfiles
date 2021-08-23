@@ -38,7 +38,7 @@ for i in "${req_pkgs[@]}"; do
     if command -v "$i" > /dev/null 2>&1; then
         printf "%s\n" "$i already installed"
     else
-        if sudo apt install -y "$i" || sudo pacman -S "$i" || sudo dnf install -y "$i" || sudo yum install -y "$i" || pkg install "$i"; then
+        if sudo apt install -y "$i" || sudo pacman -S "$i" || sudo dnf install -y "$i" || sudo yum install -y "$i" || pkg install "$i" || apt-cyg install "$i"; then
             printf "%s\n" "$i installed."
         else
             printf "%s %s\n" "Please install the following packages first, then try again:" "${req_pkgs[*]}" && exit
